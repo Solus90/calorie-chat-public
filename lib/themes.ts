@@ -1,8 +1,9 @@
 /**
- * Per-profile color themes. Each palette is four colors mapped to design tokens;
- * components keep using bg-paper, bg-clay, text-accent, etc.
+ * Color theme system. All profiles use the single DEFAULT_THEME.
+ * To add per-profile themes, add entries to THEMES and matching
+ * [data-theme="id"] blocks in app/globals.css.
  */
-export type ProfileThemeId = "alex" | "partner" | "lily";
+export type ProfileThemeId = never;
 
 export type ThemeTokens = {
   paper: string;
@@ -26,14 +27,13 @@ export type ThemeTokens = {
 };
 
 export type ProfileTheme = {
-  id: ProfileThemeId;
   /** Browser chrome / PWA status bar */
   themeColor: string;
   tokens: ThemeTokens;
 };
 
-/** Default Enterprise palette — login, select-profile, and fallback */
-export const DEFAULT_THEME = {
+/** Default Enterprise palette — used for all profiles */
+export const DEFAULT_THEME: ProfileTheme = {
   themeColor: "#edeade",
   tokens: {
     paper: "#edeade",
@@ -51,105 +51,24 @@ export const DEFAULT_THEME = {
     rust: "#dc2626",
     ring: "#ff7300",
   },
-} as const satisfies Omit<ProfileTheme, "id">;
-
-/** Alex — soft dark forest: green-tinted canvas, pine recesses, lifted clay for actions */
-const ALEX_THEME: ProfileTheme = {
-  id: "alex",
-  themeColor: "#1e2320",
-  tokens: {
-    paper: "#1e2320",
-    paperDeep: "#17362b",
-    surface: "#2a302c",
-    ink: "#e8ebe6",
-    inkMuted: "#b5c4ba",
-    hairline: "#354840",
-    clay: "#2a5c48",
-    claySoft: "#347a5a",
-    accent: "#ff7300",
-    accentSoft: "#e66800",
-    olive: "#4f7f2a",
-    amber: "#c9922e",
-    rust: "#c45c4a",
-    ring: "#ff7300",
-  },
 };
 
-/** Jordan (partner slug) — rose quartz & gold: blush canvas, burgundy-rose structure */
-const JORDAN_THEME: ProfileTheme = {
-  id: "partner",
-  themeColor: "#f5e4eb",
-  tokens: {
-    paper: "#f5e4eb",
-    paperDeep: "#e8c4d2",
-    surface: "#fffcfd",
-    ink: "#2a1220",
-    inkMuted: "#875568",
-    hairline: "#d9adbe",
-    clay: "#7a3d52",
-    claySoft: "#90495f",
-    accent: "#b76e79",
-    accentSoft: "#a35f6a",
-    olive: "#4a6e58",
-    amber: "#c48c4a",
-    rust: "#bd4656",
-    ring: "#b76e79",
-    ringWarn: "#d4a068",
-    ringOver: "#a84d62",
-  },
-};
-
-/** Lily — clear sky on lavender: airy canvas, #c7b6e2 + #94bfe9 as structure & action */
-const LILY_THEME: ProfileTheme = {
-  id: "lily",
-  themeColor: "#ebe6f6",
-  tokens: {
-    paper: "#ebe6f6",
-    paperDeep: "#c7b6e2",
-    surface: "#fffcf8",
-    ink: "#252038",
-    inkMuted: "#625c78",
-    hairline: "#ddd4ef",
-    clay: "#4888c4",
-    claySoft: "#3878b5",
-    accent: "#4888c4",
-    accentSoft: "#3878b5",
-    olive: "#3a7348",
-    amber: "#b8860b",
-    rust: "#b84a62",
-    ring: "#4888c4",
-    ringWarn: "#94bfe9",
-    ringOver: "#eaadd6",
-  },
-};
-
-const THEMES: Record<ProfileThemeId, ProfileTheme> = {
-  alex: ALEX_THEME,
-  partner: JORDAN_THEME,
-  lily: LILY_THEME,
-};
-
-export function getThemeForProfile(
-  profileId: string | null | undefined,
-): ProfileTheme | typeof DEFAULT_THEME {
-  if (profileId === "alex") return ALEX_THEME;
-  if (profileId === "partner") return JORDAN_THEME;
-  if (profileId === "lily") return LILY_THEME;
+export function getThemeForProfile(_profileId?: string | null): ProfileTheme {
   return DEFAULT_THEME;
 }
 
-export function isProfileThemeId(id: string): id is ProfileThemeId {
-  return id in THEMES;
+export function isProfileThemeId(_id: string): _id is ProfileThemeId {
+  return false;
 }
 
 export function getProfileThemeChoices(): ProfileTheme[] {
-  return [ALEX_THEME, JORDAN_THEME, LILY_THEME];
+  return [];
 }
 
 export function resolveDataTheme(
-  profileId: string | null | undefined,
-): ProfileThemeId | "default" {
-  return profileId && isProfileThemeId(profileId) ? profileId : "default";
+  _profileId?: string | null,
+): "default" {
+  return "default";
 }
 
 /**
@@ -157,9 +76,9 @@ export function resolveDataTheme(
  * profile colors always match lib/themes.ts (avoids stale CSS bundle cache).
  */
 export function themeStyleProperties(
-  profileId: string | null | undefined,
+  _profileId?: string | null,
 ): Record<string, string> {
-  const t = getThemeForProfile(profileId).tokens;
+  const t = DEFAULT_THEME.tokens;
   return {
     "--paper": t.paper,
     "--paper-deep": t.paperDeep,
@@ -175,26 +94,16 @@ export function themeStyleProperties(
     "--amber": t.amber,
     "--rust": t.rust,
     "--ring": t.ring,
-    ...("ringWarn" in t && t.ringWarn
-      ? { "--ring-warn": t.ringWarn }
-      : {}),
-    ...("ringOver" in t && t.ringOver
-      ? { "--ring-over": t.ringOver }
-      : {}),
   };
 }
 
-function applyThemeTokens(
-  el: HTMLElement,
-  profileId: string | null | undefined,
-): void {
-  const props = themeStyleProperties(profileId);
+function applyThemeTokens(el: HTMLElement): void {
+  const props = themeStyleProperties();
   for (const [key, value] of Object.entries(props)) {
     el.style.setProperty(key, value);
   }
-  // Profile ring zone tokens — remove when switching away so they don't stick.
   for (const key of ["--ring-warn", "--ring-over"] as const) {
-    if (!(key in props)) el.style.removeProperty(key);
+    el.style.removeProperty(key);
   }
 }
 
@@ -202,14 +111,13 @@ function applyThemeTokens(
  * Set data-theme, token vars, and theme-color meta immediately (client only).
  * Call right after a profile switch so the UI doesn't wait on router.refresh().
  */
-export function applyProfileTheme(profileId: string | null | undefined): void {
+export function applyProfileTheme(_profileId?: string | null): void {
   if (typeof document === "undefined") return;
-  document.documentElement.dataset.theme = resolveDataTheme(profileId);
-  applyThemeTokens(document.documentElement, profileId);
-  const theme = getThemeForProfile(profileId);
+  document.documentElement.dataset.theme = "default";
+  applyThemeTokens(document.documentElement);
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", theme.themeColor);
+    ?.setAttribute("content", DEFAULT_THEME.themeColor);
 }
 
 /** CSS custom properties for injecting on :root / [data-theme] */

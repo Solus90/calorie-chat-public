@@ -94,17 +94,15 @@ redirect to `/select-profile`. API without profile → 403. `POST /api/auth` cle
 cookie, so every login re-prompts profile selection.
 
 ### Profiles (`lib/profile.ts`)
-`PROFILE_COOKIE = "cc_profile"`. `getActiveProfileId()` defaults to `"alex"`.
+`PROFILE_COOKIE = "cc_profile"`. `getActiveProfileId()` defaults to `"user1"`.
 **Every** query function and tool takes `profileId`. When adding a table or query, you MUST
 scope it by `profile_id`.
 
 ### Themes (`lib/themes.ts`)
-Maps profile id → CSS token values. Applied via `data-theme` on `<html>` (server-side in
-`app/layout.tsx`), kept in sync by `ProfileThemeSync`, applied instantly on switch by
-`applyProfileTheme()`. Never hardcode hex in components — use token utilities. Current themes:
-`alex` (dark forest), `partner`/Jordan (lavender/blush), `lily` (clean lavender `#c7b6e2` + sky `#94bfe9` / `#4888c4` actions). Adding a theme:
-add an entry keyed by id in `lib/themes.ts` and a matching `[data-theme="id"]` block in
-`app/globals.css`.
+All profiles use the single default Enterprise palette (bone/teal/orange). Applied via
+`data-theme="default"` on `<html>`. To add a per-profile palette: add a `ProfileTheme` constant
+in `lib/themes.ts`, register it in `THEMES` and `getThemeForProfile`, then add a matching
+`[data-theme="id"]` block in `app/globals.css`.
 
 ### Timezone (`lib/timezone.ts`)
 Fixed to `America/New_York`. Use `todayInAppTz()` / helpers for any date math. Don't use raw
@@ -136,8 +134,7 @@ timezone to a UTC ISO string for filtering `timestamptz` columns.
 - Semantic roles: `--clay` = primary / `--accent` = CTA (`#ff7300`) / `--olive`/`--amber`/`--rust`
   = success/warning/danger / `--paper` = app surface / `--surface` = card / `--ink` = text.
 - Button system: `bg-accent` = primary CTA; `bg-clay` = structural/secondary.
-- Calorie ring uses `--ring` token for the normal/under-budget state (`#ff7300` for Alex +
-  default; Jordan keeps her theme color).
+- Calorie ring uses `--ring` token for the normal/under-budget state (`#ff7300` in the default theme).
 - Accessibility: AA contrast, global `:focus-visible` outline, `prefers-reduced-motion` guard.
 
 ### Other gotchas

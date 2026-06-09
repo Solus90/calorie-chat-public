@@ -8,7 +8,7 @@ import { getSupabase } from "./supabase";
  * — it just keeps each person's tracking separate.
  */
 export const PROFILE_COOKIE = "cc_profile";
-export const DEFAULT_PROFILE_ID = "alex";
+export const DEFAULT_PROFILE_ID = "user1";
 
 export type Profile = { id: string; name: string; ord: number };
 

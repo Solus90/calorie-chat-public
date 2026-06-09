@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 /* ---- Design tokens ----
-   Token NAMES are stable (bg-paper, text-ink, var(--clay)…). Values swap per
-   profile via [data-theme] on <html> (alex | partner | default).
+   Token NAMES are stable (bg-paper, text-ink, var(--clay)…). All profiles use
+   the default theme. Add [data-theme="id"] blocks here + entries in lib/themes.ts
+   to create per-profile palettes.
 */
-/* ---- Default theme (login, profile picker, fallback) ---- */
+/* ---- Default theme (all profiles) ---- */
 :root:not([data-theme]),
 [data-theme="default"] {
   --paper: #edeade;
@@ -27,65 +28,6 @@
   --font-display: "Oswald", "Arial Narrow", sans-serif;
   --font-body: "Ubuntu", system-ui, sans-serif;
   --font-mono: "Ubuntu Mono", ui-monospace, monospace;
-}
-
-/* Alex — soft dark forest. Mirror ALEX_THEME in lib/themes.ts. */
-[data-theme="alex"] {
-  --paper: #1e2320;
-  --paper-deep: #17362b;
-  --surface: #2a302c;
-  --ink: #e8ebe6;
-  --ink-muted: #b5c4ba;
-  --hairline: #354840;
-  --clay: #2a5c48;
-  --clay-soft: #347a5a;
-  --accent: #ff7300;
-  --accent-soft: #e66800;
-  --olive: #4f7f2a;
-  --amber: #c9922e;
-  --rust: #c45c4a;
-  --ring: #ff7300;
-}
-
-/* Jordan (profile slug "partner") — rose quartz & gold. Mirror JORDAN_THEME
-   in lib/themes.ts; inline vars on <html> are the runtime source of truth. */
-[data-theme="partner"] {
-  --paper: #f5e4eb;
-  --paper-deep: #e8c4d2;
-  --surface: #fffcfd;
-  --ink: #2a1220;
-  --ink-muted: #875568;
-  --hairline: #d9adbe;
-  --clay: #7a3d52;
-  --clay-soft: #90495f;
-  --accent: #b76e79;
-  --accent-soft: #a35f6a;
-  --olive: #4a6e58;
-  --amber: #c48c4a;
-  --rust: #bd4656;
-  --ring: #b76e79;
-  --ring-warn: #d4a068;
-  --ring-over: #a84d62;
-}
-
-/* Lily — clear sky on lavender. Mirror LILY_THEME in lib/themes.ts. */
-[data-theme="lily"] {
-  --paper: #ebe6f6;
-  --paper-deep: #c7b6e2;
-  --surface: #fffcf8;
-  --ink: #252038;
-  --ink-muted: #625c78;
-  --hairline: #ddd4ef;
-  --clay: #4888c4;
-  --clay-soft: #3878b5;
-  --accent: #4888c4;
-  --accent-soft: #3878b5;
-  --olive: #3a7348;
-  --amber: #b8860b;
-  --rust: #b84a62;
-  --ring: #4888c4;
-  --ring-warn: #94bfe9;
-  --ring-over: #eaadd6;
 }
 
 /* Map tokens into Tailwind's utility namespace so bg-paper / text-ink work */

@@ -95,7 +95,7 @@ export function SettingsForm() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Alex"
+          placeholder="e.g. User 1"
           className="max-w-[220px] rounded-md border border-hairline bg-paper px-4 py-2.5 text-ink outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/25"
         />
       </Field>

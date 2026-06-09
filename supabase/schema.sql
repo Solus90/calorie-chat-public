@@ -16,8 +16,7 @@ create table if not exists public.profiles (
 );
 
 insert into public.profiles (id, name, ord) values
-  ('phil', 'Phil', 1),
-  ('partner', 'Lisa', 2)
+  ('user1', 'User 1', 1)
 on conflict (id) do nothing;
 
 -- ---------------------------------------------------------------------------
@@ -34,7 +33,7 @@ create table if not exists public.settings (
   updated_at timestamptz not null default now()
 );
 
-insert into public.settings (profile_id) values ('phil'), ('partner')
+insert into public.settings (profile_id) values ('user1')
 on conflict (profile_id) do nothing;
 
 -- ---------------------------------------------------------------------------
