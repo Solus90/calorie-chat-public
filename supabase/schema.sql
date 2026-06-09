@@ -85,6 +85,22 @@ create table if not exists public.chat_messages (
 create index if not exists chat_messages_profile_idx on public.chat_messages (profile_id, created_at);
 
 -- ---------------------------------------------------------------------------
+-- scanned_products: 7-day rolling cache of barcode-scanned items per profile
+-- ---------------------------------------------------------------------------
+create table if not exists public.scanned_products (
+  id uuid primary key default gen_random_uuid(),
+  profile_id text not null references public.profiles(id) on delete cascade,
+  barcode text not null,
+  name text not null,
+  calories integer not null,
+  serving text,
+  scanned_at timestamptz not null default now(),
+  unique (profile_id, barcode)
+);
+
+create index if not exists scanned_products_profile_idx on public.scanned_products (profile_id, scanned_at);
+
+-- ---------------------------------------------------------------------------
 -- Lock out public roles (service-role bypasses RLS; see note at top).
 -- ---------------------------------------------------------------------------
 alter table public.profiles enable row level security;
@@ -92,3 +108,4 @@ alter table public.settings enable row level security;
 alter table public.food_entries enable row level security;
 alter table public.weight_entries enable row level security;
 alter table public.chat_messages enable row level security;
+alter table public.scanned_products enable row level security;

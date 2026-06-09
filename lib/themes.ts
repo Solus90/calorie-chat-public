@@ -1,7 +1,7 @@
 /**
  * Color theme system. All profiles use the single DEFAULT_THEME.
- * To add per-profile themes, add entries to THEMES and matching
- * [data-theme="id"] blocks in app/globals.css.
+ * To add per-profile themes, wire them into getThemeForProfile / isProfileThemeId
+ * and add matching [data-theme="id"] blocks in app/globals.css.
  */
 export type ProfileThemeId = never;
 

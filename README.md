@@ -7,8 +7,8 @@ instantly pull a packaged product's exact figures. It tracks your **goal weight*
 calorie limit**, and **weight over time** with a progress chart and goal-date forecast.
 
 Built with Next.js 16, Supabase, and the Vercel AI SDK (Claude Sonnet 4.6). Supports multiple
-**profiles** (e.g. you + partner) behind one shared password — each tracked separately with its
-own color theme. Installable as a PWA.
+**profiles** (e.g. you + partner) behind one shared password — each tracked separately.
+Installable as a PWA.
 
 ---
 
@@ -125,8 +125,8 @@ Next.js 16 (App Router, Turbopack) · React 19 · Tailwind CSS v4 · Vercel AI S
 
 - Go to [supabase.com](https://supabase.com) → New project.
 - Open **SQL Editor → New query**, paste [`supabase/schema.sql`](supabase/schema.sql), and run it.
-  This creates `profiles`, `settings`, `food_entries`, `weight_entries`, `chat_messages`, and
-  `scanned_products` (and enables RLS — see security note below).
+  This creates all six tables (`profiles`, `settings`, `food_entries`, `weight_entries`,
+  `chat_messages`, `scanned_products`) and enables RLS on each (see security note below).
 - Copy the **Project URL** and **`service_role` key** from Project Settings → API Keys.
 
 ### 2. Configure environment
@@ -191,7 +191,7 @@ in the Vercel project settings for Production.
 | `lib/assistant.ts` | System prompt builder (cached + fresh split for caching) |
 | `lib/queries.ts` | All Supabase queries, scoped by `profile_id` |
 | `lib/forecast.ts` | Least-squares goal-date projection |
-| `lib/themes.ts` | Per-profile CSS token palettes |
+| `lib/themes.ts` | CSS token palette (default theme; extend to add per-profile palettes) |
 | `lib/timezone.ts` | Fixed app timezone (`America/New_York`) helpers |
 | `components/BarcodeScanner.tsx` | Full-screen camera modal (ZXing, dynamically imported) |
 | `components/TodayPageContent.tsx` | Main Today layout (chat + ring + log + weight rail) |

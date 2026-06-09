@@ -7,7 +7,7 @@ Guidance for Claude Code working in this repo. Read this before making changes.
 A password-gated, **multi-profile conversational calorie tracker**. You log food by chatting with
 Claude (it clarifies → estimates → logs via tool calls), scanning a barcode, or manual entry.
 Tracks weight/goal/calorie-limit with charts and a 7-day day strip. One shared password; each
-profile has its own data and color theme. Installable as a PWA. Next.js 16 (App Router) + Supabase
+profile has its own data. Installable as a PWA. Next.js 16 (App Router) + Supabase
 + Vercel AI SDK v6 (`claude-sonnet-4-6`).
 
 ## Commands
@@ -101,7 +101,7 @@ scope it by `profile_id`.
 ### Themes (`lib/themes.ts`)
 All profiles use the single default Enterprise palette (bone/teal/orange). Applied via
 `data-theme="default"` on `<html>`. To add a per-profile palette: add a `ProfileTheme` constant
-in `lib/themes.ts`, register it in `THEMES` and `getThemeForProfile`, then add a matching
+in `lib/themes.ts`, wire it into `getThemeForProfile` and `isProfileThemeId`, then add a matching
 `[data-theme="id"]` block in `app/globals.css`.
 
 ### Timezone (`lib/timezone.ts`)
@@ -147,8 +147,7 @@ timezone to a UTC ISO string for filtering `timestamptz` columns.
 
 ## Deploying
 
-**Do not** run `vercel --prod` or deploy from the CLI. Deployment is continuous from GitHub:
-`git push origin main` → Vercel builds production. Confirm with the user before pushing.
+Deployment is continuous from GitHub: `git push origin main` → Vercel builds production.
 
 Env vars required in Vercel: `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
 `APP_PASSWORD`, `AUTH_SECRET`, `USDA_API_KEY`, `CRON_SECRET`.
